@@ -1,4 +1,4 @@
-name: Deploy Static JS bundle
+name: Deploy static JS bundle to s3
 on:
   push:
     branches:
@@ -33,3 +33,26 @@ jobs:
 
       - name: 🚀 Publish app
         run: expo export --public-url https://artshin.github.io/mobile-expo
+
+      - name: Deploy to s3 
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete --exclude '.git/*' 
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-2'
+          SOURCE_DIR: 'dist'
+
+      # - name: send telegram message
+      #   uses: appleboy/telegram-action@master
+      #   with:
+      #     to: ${{ secrets.TELEGRAM_TO }}
+      #     token: ${{ secrets.TELEGRAM_TOKEN }}
+      #     message: |
+      #       ${{ github.actor }} made a new iOS/Android Expo Go release:
+      #       Commit message: ${{ github.event.commits[0].message }}
+            
+      #       iOS App: exp://192.xxx.xxx.xxx:8000/android-index.json
+      #       See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
