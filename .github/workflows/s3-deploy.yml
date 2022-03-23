@@ -2,47 +2,47 @@ name: Deploy static JS bundle to s3
 on:
   push:
     branches:
-      - deploy
+      - master
 
 jobs:
-  # publish:
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: 🏗 Setup repo
-  #       uses: actions/checkout@v2
+  publish:
+    runs-on: self-hosted
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v2
 
-  #     - name: 🏗 Setup Node
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 16.x
-  #         cache: yarn
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          cache: yarn
 
-  #     - name: 🏗 Setup Expo
-  #       uses: expo/expo-github-action@v7
-  #       with:
-  #         expo-version: latest
-  #         token: ${{ secrets.EXPO_TOKEN }}
+      - name: 🏗 Setup Expo
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-  #     - name: 📦 Install dependencies
-  #       run: yarn install
+      - name: 📦 Install dependencies
+        run: yarn install
 
-  #     - name: 🚀 Publish app
-  #       run: expo export --public-url https://inst-ru-expo.s3.us-east-2.amazonaws.com/
+      - name: 🚀 Publish app
+        run: expo export --public-url https://inst-ru-expo.s3.us-east-2.amazonaws.com/
 
-  #     - name: Set AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: us-east-2
+      - name: Set AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
 
-  #     - name: Deploy to s3
-  #       run: |
-  #         aws s3 sync dist s3://inst-ru-expo --acl public-read --follow-symlinks --delete --exclude '.git/*'
+      - name: Deploy to s3
+        run: |
+          aws s3 sync dist s3://inst-ru-expo --acl public-read --follow-symlinks --delete --exclude '.git/*'
 
   notify:
     runs-on: ubuntu-latest
-    # needs: publish
+    needs: publish
     steps:
       - name: Send Telegram message
         uses: appleboy/telegram-action@master
@@ -60,13 +60,13 @@ jobs:
 
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
 
-  # clean-working-directory:
-  #   runs-on: self-hosted
-  #   needs: publish
-  #   steps:
-  #     - name: Clean working directory
-  #       shell: bash
-  #       run: |
-  #        cd $RUNNER_WORKSPACE
-  #        cd ..
-  #        rm -r *
+  clean-working-directory:
+    runs-on: self-hosted
+    needs: publish
+    steps:
+      - name: Clean working directory
+        shell: bash
+        run: |
+         cd $RUNNER_WORKSPACE
+         cd ..
+         rm -r *
