@@ -42,7 +42,7 @@ jobs:
 
   notify:
     runs-on: ubuntu-latest
-    needs: publish
+    # needs: publish
     steps:
       - name: Send Telegram message
         uses: appleboy/telegram-action@master
