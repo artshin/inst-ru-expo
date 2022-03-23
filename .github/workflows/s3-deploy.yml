@@ -45,6 +45,11 @@ jobs:
         run: |
           aws s3 sync dist s3://inst-ru-expo --acl public-read --follow-symlinks --delete --exclude '.git/*'
 
+      
+
+  notify:
+    runs-on: ubuntu-latest
+    steps:
       - name: Send Telegram message
         uses: appleboy/telegram-action@master
         with:
