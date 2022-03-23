@@ -54,7 +54,7 @@ jobs:
 
       - name: Deploy to s3
         run: |
-          aws s3 sync . s3://inst-ru-expo
+          aws s3 sync dist s3://inst-ru-expo
 
       # - name: send telegram message
       #   uses: appleboy/telegram-action@master
