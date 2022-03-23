@@ -49,23 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     # needs: publish
     steps:
-      - name: Shorten iOS url
-        id: short-ios-url
-        uses: Gottox/url-shortener-action@v1.0.0
+      - name: Publish
+        uses: softprops/action-gh-release@v1
         with:
-          url: exp://inst-ru-expo.s3.us-east-2.amazonaws.com/ios-index.json
-      
-      - name: Shorten Android url
-        id: short-android-url
-        uses: Gottox/url-shortener-action@v1.0.0
-        with:
-          url: exp://inst-ru-expo.s3.us-east-2.amazonaws.com/android-index.json
-  
-      - name: iOS url
-        run: echo "${{ steps.short-ios-url.outputs.short_url }}"
-
-      - name: Android url
-        run: echo "${{ steps.short-android-url.outputs.short_url }}"
+          body: |
+            [iOS App](exp://inst-ru-expo.s3.us-east-2.amazonaws.com/ios-index.json)
+            [Android App](exp://inst-ru-expo.s3.us-east-2.amazonaws.com/android-index.json)
 
       # - name: Send Telegram message
       #   uses: appleboy/telegram-action@master
