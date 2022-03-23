@@ -45,10 +45,9 @@ jobs:
         run: |
           aws s3 sync dist s3://inst-ru-expo --acl public-read --follow-symlinks --delete --exclude '.git/*'
 
-      
-
   notify:
     runs-on: ubuntu-latest
+    needs: publish
     steps:
       - name: Send Telegram message
         uses: appleboy/telegram-action@master
@@ -57,13 +56,16 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ${{ github.actor }} made a new iOS/Android Expo Go release:
+
             Commit message: ${{ github.event.commits[0].message }}
-            iOS App: exp://inst-ru-expo.s3.us-east-2.amazonaws.com/ios-index.json
-            Android App: exp://inst-ru-expo.s3.us-east-2.amazonaws.com/android-index.json
+
+            [iOS App](exp://inst-ru-expo.s3.us-east-2.amazonaws.com/ios-index.json)
+            [Android App](exp://inst-ru-expo.s3.us-east-2.amazonaws.com/android-index.json)
+            
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
 
   clean-working-directory:
-    runs-on: [self-hosted]
+    runs-on: self-hosted
     needs: publish
     steps:
       - name: Clean working directory
