@@ -11,10 +11,10 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: "**/node_modules"
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 🏗 Setup Node
         uses: actions/setup-node@v2
@@ -54,6 +54,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             ${{ github.actor }} made a new iOS/Android Expo Go release:
 
@@ -61,7 +62,7 @@ jobs:
 
             [iOS App](exp://inst-ru-expo.s3.us-east-2.amazonaws.com/ios-index.json)
             [Android App](exp://inst-ru-expo.s3.us-east-2.amazonaws.com/android-index.json)
-            
+
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
 
   clean-working-directory:
