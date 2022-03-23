@@ -61,3 +61,14 @@ jobs:
             iOS App: exp://inst-ru-expo.s3.us-east-2.amazonaws.com/ios-index.json
             Android App: exp://inst-ru-expo.s3.us-east-2.amazonaws.com/android-index.json
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+  clean-working-directory:
+    runs-on: [self-hosted]
+    needs: publish
+    steps:
+      - name: Clean working directory
+        shell: bash
+        run: |
+         cd $RUNNER_WORKSPACE
+         cd ..
+         rm -r *
