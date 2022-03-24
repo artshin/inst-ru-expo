@@ -12,3 +12,5 @@ web-build/
 
 # macOS
 .DS_Store
+android/keystores/release.keystore
+credentials.json
