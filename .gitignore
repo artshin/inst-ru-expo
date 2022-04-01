@@ -35,3 +35,6 @@ generate-android-keystore.sh
 /.pnp
 .pnp.js
 # @end @expo/next-adapter
+
+android/keystores/*
+credentials.json
