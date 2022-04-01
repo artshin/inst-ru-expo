@@ -1,32 +1,45 @@
 {
   "name": "inst-ru-expo",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
+    "dev-mobile": "expo start --tunnel",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "build": "next build"
   },
   "dependencies": {
+    "@eva-design/eva": "^2.1.1",
+    "@expo/next-adapter": "^3.1.21",
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
+    "@ui-kitten/components": "^5.1.1",
+    "eas-cli": "^0.48.2",
     "expo": "^44.0.0",
     "expo-status-bar": "^1.2.0",
+    "global": "^4.4.0",
+    "next": "^12.1.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
-    "react-native-web": "0.17.1"
+    "react-native-svg": "12.1.1",
+    "react-native-web": "0.17.1",
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/react": "^17.0.21",
     "@types/react-native": "^0.64.12",
+    "@types/seedrandom": "^3.0.2",
     "babel-plugin-module-resolver": "^4.1.0",
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^9.0.0",
+    "prettier": "^2.6.1",
     "typescript": "^4.6.2"
   },
   "private": true

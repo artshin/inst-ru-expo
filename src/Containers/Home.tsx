@@ -1,7 +1,7 @@
-import Colors from "@/utils/Colors";
-import React from "react";
-import { useRef } from "react";
-import { useState } from "react";
+import Colors from '@app/Utils/Colors'
+import React from 'react'
+import { useRef } from 'react'
+import { useState } from 'react'
 import {
   FlatList,
   Image,
@@ -11,55 +11,55 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Section = {
-  id: string;
-  title: string;
-};
+  id: string
+  title: string
+}
 
 type Media = {
-  id: string;
-  title: string;
-};
+  id: string
+  title: string
+}
 
 export default function HomeScreen() {
   const sections: Section[] = [
-    { id: "foo1", title: "Рекомендации" },
-    { id: "foo2", title: "Подписки " },
-    { id: "foo3", title: "Друзья " },
-    { id: "foo4", title: "Блогеры" },
-    { id: "foo5", title: "Магазины" },
-    { id: "foo6", title: "Музыка" },
-  ];
+    { id: 'foo1', title: 'Рекомендации' },
+    { id: 'foo2', title: 'Подписки ' },
+    { id: 'foo3', title: 'Друзья ' },
+    { id: 'foo4', title: 'Блогеры' },
+    { id: 'foo5', title: 'Магазины' },
+    { id: 'foo6', title: 'Музыка' },
+  ]
 
   const media: Media[] = [
-    { id: "foo1", title: "Рекомендации" },
-    { id: "foo2", title: "Подписки " },
-    { id: "foo3", title: "Друзья " },
-    { id: "foo4", title: "Блогеры" },
-    { id: "foo5", title: "Магазины" },
-    { id: "foo6", title: "Музыка" },
-  ];
+    { id: 'foo1', title: 'Рекомендации' },
+    { id: 'foo2', title: 'Подписки ' },
+    { id: 'foo3', title: 'Друзья ' },
+    { id: 'foo4', title: 'Блогеры' },
+    { id: 'foo5', title: 'Магазины' },
+    { id: 'foo6', title: 'Музыка' },
+  ]
 
-  const flatListRef = useRef<FlatList>(null);
-  const [selectedSection, setSelectedSection] = useState<Section>(sections[0]);
+  const flatListRef = useRef<FlatList>(null)
+  const [selectedSection, setSelectedSection] = useState<Section>(sections[0])
   const onSelectSection = (item: Section, index: number) => {
-    setSelectedSection(item);
-    flatListRef?.current?.scrollToIndex({ index, animated: true });
-  };
+    setSelectedSection(item)
+    flatListRef?.current?.scrollToIndex({ index, animated: true })
+  }
   const [mediaLayout, setMediaLayout] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
+    width: number
+    height: number
+  } | null>(null)
 
   const renderSection = ({ item, index }: { item: Section; index: number }) => {
     return (
       <TouchableOpacity
         style={{
-          display: "flex",
-          justifyContent: "center",
+          display: 'flex',
+          justifyContent: 'center',
           paddingHorizontal: 4,
         }}
         onPress={() => onSelectSection(item, index)}
@@ -69,8 +69,8 @@ export default function HomeScreen() {
             paddingVertical: 10,
             paddingHorizontal: 16,
             borderRadius: 16,
-            overflow: "hidden",
-            fontWeight: "500",
+            overflow: 'hidden',
+            fontWeight: '500',
             color: item.id === selectedSection.id ? Colors.white : Colors.black,
             backgroundColor:
               item.id === selectedSection.id ? Colors.green : Colors.white,
@@ -79,14 +79,14 @@ export default function HomeScreen() {
           {item.title}
         </Text>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const renderMedia = ({ item, index }: { item: Media; index: number }) => {
     return (
       <View
         style={{
-          display: "flex",
+          display: 'flex',
           width: mediaLayout?.width,
           height: mediaLayout?.height,
         }}
@@ -94,22 +94,22 @@ export default function HomeScreen() {
         <Image
           style={{ flex: 1 }}
           source={{
-            uri: "https://drscdn.500px.org/photo/1045792342/q%3D80_m%3D2000/v2?sig=cc6fc2db0b48ba23be045bd1d2e0c4e283bce0b5e06948befe68219a9b0bbc78",
+            uri: 'https://drscdn.500px.org/photo/1045792342/q%3D80_m%3D2000/v2?sig=cc6fc2db0b48ba23be045bd1d2e0c4e283bce0b5e06948befe68219a9b0bbc78',
           }}
         />
       </View>
-    );
-  };
+    )
+  }
 
   const onMediaContainerLayout = (event: LayoutChangeEvent) =>
     setMediaLayout({
       width: event.nativeEvent.layout.width,
       height: event.nativeEvent.layout.height,
-    });
+    })
 
   let onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (!mediaLayout) {
-      return;
+      return
     }
 
     let pageNumber = Math.min(
@@ -119,8 +119,8 @@ export default function HomeScreen() {
         0
       ),
       media.length
-    );
-  };
+    )
+  }
 
   return (
     <SafeAreaView
@@ -128,12 +128,12 @@ export default function HomeScreen() {
         flex: 1,
         backgroundColor: Colors.white,
       }}
-      edges={["top"]}
+      edges={['top']}
     >
       <View
         style={{
-          display: "flex",
-          height: "10%",
+          display: 'flex',
+          height: '10%',
         }}
       >
         <FlatList
@@ -163,5 +163,5 @@ export default function HomeScreen() {
         )}
       </View>
     </SafeAreaView>
-  );
+  )
 }

@@ -4,13 +4,13 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/Components/*"],
-      "@/containers/*": ["src/Containers/*"],
-      "@/navigation/*": ["src/Navigation/*"],
-      "@/contexts/*": ["src/Contexts/*"],
-      "@/utils/*": ["src/Utils/*"],
-      "@/api/*": ["src/API/*"],
-      "@/hooks/*": ["src/Hooks/*"]
-    }
-  }
+      "@app/*": ["./src/*"]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "module": "esnext",
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
