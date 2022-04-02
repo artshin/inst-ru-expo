@@ -64,7 +64,13 @@ function TabStackScreen() {
 }
 
 function RootStackScreen() {
-  const screenOptions = () => ({ headerShown: false })
+  const screenOptions = () => ({
+    headerShown: false,
+    headerStyle: {
+      backgroundColor: Colors.orange,
+    },
+    headerTintColor: Colors.honeyDew,
+  })
 
   return (
     <RootStack.Navigator
@@ -77,7 +83,11 @@ function RootStackScreen() {
         <RootStack.Screen
           name={'Breach'}
           component={BreachScrean}
-          options={{ headerShown: true }}
+          options={{
+            headerShown: true,
+            title: 'Breach Matrix',
+            headerBackTitle: ' ',
+          }}
         />
         <RootStack.Screen name={'Root'} component={RootScreen} />
       </RootStack.Group>

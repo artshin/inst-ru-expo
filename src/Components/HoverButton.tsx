@@ -1,22 +1,28 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, TouchableOpacity, ViewStyle } from 'react-native'
+import {
+  Animated,
+  Easing,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native'
 
-export const HoverTouchable: FunctionComponent<{
-  style?: ViewStyle
-  hover?: boolean
-  disabled?: boolean
-  onPress: () => void
-  onHoverEnter?: () => void
-  onHoverLeave?: () => void
-}> = ({
-  onPress,
-  onHoverEnter,
-  onHoverLeave,
-  disabled,
-  children,
-  style,
-  hover = false,
-}) => {
+export const HoverTouchable: FunctionComponent<
+  {
+    hover?: boolean
+    disabled?: boolean
+    onPress: () => void
+    onHoverEnter?: () => void
+    onHoverLeave?: () => void
+  } & TouchableOpacityProps
+> = (props) => {
+  const {
+    onHoverEnter,
+    onHoverLeave,
+    disabled,
+    children,
+    style,
+    hover = false,
+  } = props
   const onMouseEnter = () => {
     !disabled && onHoverEnter?.()
   }
@@ -29,22 +35,24 @@ export const HoverTouchable: FunctionComponent<{
 
   return (
     <TouchableOpacity
+      {...props}
       hitSlop={{
         top: 15,
         bottom: 15,
         right: 10,
         left: 10,
       }}
-      tabindex={'0'}
       accessibilityRole={'button'}
+      // @ts-ignore
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onPress={onPress}
-      style={{
-        // @ts-ignore
-        cursor,
-        ...style,
-      }}
+      style={[
+        style,
+        {
+          // @ts-ignore
+          cursor,
+        },
+      ]}
     >
       <HoverView show={hover} />
       {children}
