@@ -1,8 +1,11 @@
+import Colors from '@app/Utils/Colors'
 import { Matrix, Sequence, MatrixField } from '@app/Utils/Matrix'
 import React, { useMemo, useState } from 'react'
-import { View, Text } from 'react-native'
+import { View, ViewProps } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { HoverTouchable } from './HoverButton'
+import { Button, Card, Modal, Text } from '@ui-kitten/components'
+import { useNavigation } from '@react-navigation/native'
 
 const MatrixGrid = ({
   currentSequence,
@@ -43,15 +46,19 @@ const MatrixGrid = ({
     ...currentSequence.values.map((el) => el.index),
   ])
 
-  const MatrixCell = ({ field }: { field: MatrixField }) => {
-    let backgroundColor = 'gray'
+  const MatrixCell = ({ field, style }: { field: MatrixField } & ViewProps) => {
+    let backgroundColor = Colors.racingGreen
+    let color = Colors.white
     let disabled = false
+    let opacity = 0.6
+
     if (currentCells.has(field.index)) {
-      backgroundColor = 'aquamarine'
+      backgroundColor = Colors.oceanGreen
+      opacity = 1
     }
 
     if (solutionSequence.values.find((el) => el.index === field.index)) {
-      backgroundColor = 'green'
+      backgroundColor = Colors.orange
       disabled = true
     }
 
@@ -61,23 +68,30 @@ const MatrixGrid = ({
 
     return (
       <HoverTouchable
-        style={{
-          padding: 4,
-          // flex: 1,
-          aspectRatio: 1,
-          borderWidth: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor,
-          marginRight: 8,
-        }}
+        style={[
+          style,
+          {
+            padding: 4,
+            flex: 1,
+            aspectRatio: 1,
+            borderWidth: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor,
+            borderRadius: 4,
+            opacity,
+          },
+        ]}
         onPress={() => onCellPress(field)}
         onHoverEnter={() => onCellHoverEnter(field)}
         onHoverLeave={() => onCellHoverLeave(field)}
         hover={false}
         disabled={disabled}
       >
-        <Text>{field.index + '-' + field.label}</Text>
+        <Text style={{ color }} category={'h6'}>
+          {/* {field.index + '-' + field.label} */}
+          {field.label}
+        </Text>
       </HoverTouchable>
     )
   }
@@ -96,20 +110,24 @@ const MatrixGrid = ({
       style={{
         flexDirection: 'column',
         marginTop: 16,
-        flex: 1,
       }}
     >
       {matrixValueRows.map((row, idx) => (
         <View
           key={'row' + idx}
           style={{
-            flex: 1,
             flexDirection: 'row',
-            marginBottom: idx === matrixValueRows.length - 1 ? 0 : 8,
           }}
         >
-          {row.map((el) => (
-            <MatrixCell key={el.label + el.index} field={el} />
+          {row.map((el, jdx) => (
+            <MatrixCell
+              key={el.label + el.index}
+              field={el}
+              style={{
+                marginRight: jdx === row.length - 1 ? 0 : 8,
+                marginBottom: idx === matrixValueRows.length - 1 ? 0 : 8,
+              }}
+            />
           ))}
         </View>
       ))}
@@ -132,17 +150,55 @@ const PuzzleSequences = ({ sequences }: { sequences: Sequence[] }) => {
             <View
               key={idx + el.label}
               style={{
-                width: 40,
-                height: 40,
+                width: 44,
+                height: 44,
                 marginRight: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderWidth: 1,
+                borderColor: Colors.oceanGreen,
+                borderRadius: 4,
               }}
             >
-              <Text>{el.label}</Text>
+              <Text style={{ color: Colors.honeyDew }}>{el.label}</Text>
             </View>
           ))}
+        </View>
+      ))}
+    </View>
+  )
+}
+
+const SequenceField = ({
+  sequence,
+  style,
+}: { sequence: Sequence } & ViewProps) => {
+  return (
+    <View
+      style={[
+        style,
+        {
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      ]}
+    >
+      {sequence.values.map((el, idx) => (
+        <View
+          key={el.label + idx}
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: 44,
+            height: 44,
+            borderWidth: 1,
+            borderColor: Colors.oceanGreen,
+            borderRadius: 8,
+            marginRight: 8,
+          }}
+        >
+          <Text style={{ color: Colors.honeyDew }}>{el.label}</Text>
         </View>
       ))}
     </View>
@@ -152,6 +208,8 @@ const PuzzleSequences = ({ sequences }: { sequences: Sequence[] }) => {
 type SelectMode = 'vertical' | 'horizontal'
 
 export default function BreachGrid() {
+  const navigation = useNavigation()
+  const [gameCount, setGameCount] = useState(1)
   const [matrixSize, setMatrixSize] = useState(5)
   const [solutionSize, setSolutionSize] = useState(6)
   const [selectMode, setSelectMode] = useState<SelectMode>('vertical')
@@ -159,11 +217,7 @@ export default function BreachGrid() {
     new Sequence(solutionSize)
   )
 
-  const matrix = useMemo(() => new Matrix(matrixSize), [matrixSize])
-  // const puzzleSequences = useMemo(
-  //   () => ,
-  //   [matrix]
-  // )
+  const matrix = useMemo(() => new Matrix(matrixSize), [matrixSize, gameCount])
 
   const [puzzleSequences, setPuzzleSequences] = useState<Sequence[]>(
     matrix.generateRandomSequences(3)
@@ -206,18 +260,40 @@ export default function BreachGrid() {
     setSolutionSequence({ ...solutionSequence, values: newValues })
   }
 
+  const onExitPress = () => {
+    navigation.goBack()
+  }
+
+  const onPlayAgainPress = () => {
+    setGameCount(gameCount + 1)
+    setSolutionSequence(new Sequence(solutionSize))
+    setPuzzleSequences(matrix.generateRandomSequences(3))
+  }
+
+  const solutionFilled =
+    solutionSequence.values.find((el) => el.index === -1) === undefined
+  const allPuzzleSequencesSolved = puzzleSequences.length === 0
+  const isGameOver = solutionFilled || allPuzzleSequencesSolved
+
   return (
     <SafeAreaView
       edges={['bottom']}
       style={{
         flex: 1,
         padding: 16,
-        // alignItems: 'center',
+        backgroundColor: Colors.darkJungleGreen,
         justifyContent: 'flex-start',
       }}
     >
-      <Text style={{ fontSize: 24 }}>{'Breach Protocol'}</Text>
-      <Text style={{ fontSize: 16, marginTop: 4 }}>{'Find sequences'}</Text>
+      {/* <Text style={{ fontSize: 24, color: Colors.honeyDew }} category="h1">
+        {'Breach Protocol'}
+      </Text> */}
+      <Text
+        style={{ fontSize: 16, marginTop: 4, color: Colors.honeyDew }}
+        category={'h1'}
+      >
+        {'Find sequences'}
+      </Text>
 
       <PuzzleSequences sequences={puzzleSequences} />
 
@@ -229,28 +305,44 @@ export default function BreachGrid() {
         onCellPress={onMatrixCellPress}
       />
 
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 16,
-        }}
+      <SequenceField
+        sequence={solutionSequence}
+        style={{ flex: 1, marginTop: 16 }}
+      />
+
+      <Modal
+        visible={isGameOver}
+        backdropStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       >
-        {solutionSequence.values.map((el, idx) => (
-          <View
-            key={el.label + idx}
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: 40,
-              height: 40,
-              borderWidth: 1,
-              marginRight: 8,
-            }}
-          >
-            <Text style={{}}>{el.label}</Text>
+        <Card disabled={true} style={{ backgroundColor: Colors.oceanGreen }}>
+          <Text category={'h4'} style={{ textAlign: 'center' }}>
+            Game Over
+          </Text>
+          <View style={{ flexDirection: 'row', marginTop: 32 }}>
+            <Button
+              style={{
+                backgroundColor: Colors.orange,
+                marginRight: 16,
+                paddingHorizontal: 16,
+                borderColor: Colors.honeyDew,
+              }}
+              onPress={onExitPress}
+            >
+              Exit
+            </Button>
+            <Button
+              style={{
+                backgroundColor: Colors.racingGreen,
+                paddingHorizontal: 16,
+                borderColor: Colors.honeyDew,
+              }}
+              onPress={onPlayAgainPress}
+            >
+              Play Again
+            </Button>
           </View>
-        ))}
-      </View>
+        </Card>
+      </Modal>
     </SafeAreaView>
   )
 }
